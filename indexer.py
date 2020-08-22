@@ -14,7 +14,7 @@ class Indexer:
 
         self.indexer_dir = os.path.join(data_root, 'index',
                                         self.dataset.name, self.encoder.name,
-                                        'window_{0:02d}'.format(self.window_size))
+                                        'window_{:02d}'.format(self.window_size))
         os.makedirs(self.indexer_dir, exist_ok=True)
 
     def index(self):
@@ -29,7 +29,7 @@ class Indexer:
             for i in range(conv_size - self.window_size + 1):
                 current_msg_ids = msgs_ids[i:i+self.window_size]
                 content = Indexer._get_msgs_content(conversation, current_msg_ids)
-                filename = 'conv_{0:05d}_msgs_{0:05d}_{0:05d}.pkl'.format(conv_id, i, i + self.window_size)
+                filename = 'conv_{:05d}_msgs_{:05d}_{:05d}.pkl'.format(conv_id, i, i + self.window_size)
                 file_path = os.path.join(self.indexer_dir, filename)
                 if os.path.exists(file_path):
                     continue

@@ -14,7 +14,7 @@ class BertEncoder(BaseEncoder):
         self.model.eval()
 
     def encode(self, text):
-        input_ids = torch.LongTensor(self.tokenizer.encode(text)).to(self.device)
+        input_ids = torch.LongTensor(self.tokenizer.encode(text, max_length=510, truncation=True)).to(self.device)
         input_ids = input_ids.unsqueeze(0)
         with torch.no_grad():
             out = self.model(input_ids=input_ids)
