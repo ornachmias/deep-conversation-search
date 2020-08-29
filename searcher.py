@@ -2,8 +2,6 @@ import os
 import pickle
 import re
 
-from tqdm import tqdm
-
 from encoders.base_encoder import BaseEncoder
 
 
@@ -22,10 +20,12 @@ class Searcher:
 
         result = {}
         text_encoded = self.encoder.encode(text)
-        for index_file in tqdm(index_files):
+        total_distance = 0
+        for index_file in index_files:
             file_name = os.path.basename(index_file).replace('.pkl', '')
             index = pickle.load(open(index_file, 'rb'))
             distance = self.comparison_func(text_encoded, index)
+            total_distance += distance
 
             if len(result) < self.top_results:
                 result[file_name] = distance

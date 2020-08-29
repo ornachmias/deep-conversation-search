@@ -9,4 +9,4 @@ class Utils:
 
     @staticmethod
     def l2_norm(vec1, vec2):
-        dist = np.linalg.norm(vec1 - vec2)
+        return np.linalg.norm(vec1 - vec2)

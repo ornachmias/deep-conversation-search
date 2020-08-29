@@ -26,28 +26,42 @@ class ExperimentHandler:
             retrieved_msg_ids, search_time = self.search(conversation_id, query)
             search_times.append(search_time)
 
+            if not conversation['correct_line_ids']:
+                continue
+
             evaluation = self.evaluate(conversation['correct_line_ids'], retrieved_msg_ids)
             result.append({
                 'precision': evaluation.precision(),
                 'recall': evaluation.recall(),
-                'f1': evaluation.f1_score()
+                'f1': evaluation.f1_score(),
+                'precision@5': evaluation.precision_5(),
+                'recall@5': evaluation.recall_5(),
+                'f1@5': evaluation.f1_score_5()
             })
 
         return result, index_time, np.mean(search_times)
 
     def search(self, conversation_id, query):
+        result = []
         start_time = time.time()
-        result_filename = self.searcher.search(query, conversation_id)
+        top_results = self.searcher.search(query, conversation_id)
         end_time = time.time() - start_time
-        conv_id, msg_ids = Searcher.filename_to_ids(result_filename)
-        return msg_ids, end_time
+        for filename in top_results:
+            conv_id, msg_ids = Searcher.filename_to_ids(filename)
+            result.append([msg_ids])
+
+        return result, end_time
 
     def index(self):
         start_time = time.time()
         self.indexer.index()
         return time.time() - start_time
 
-    def evaluate(self, relevant_msg_ids, retrieved_msg_ids):
-        window_size = self.indexer.window_size
-        evaluation = EvaluationMetrics(retrieved_msg_ids, relevant_msg_ids, window_size)
+    def evaluate(self, relevant_msg_ids, top_retrieved_msg_ids):
+        # Flatten retrieved docs
+        retrieved_msg_ids = set()
+        for msg_ids in top_retrieved_msg_ids:
+            retrieved_msg_ids.update(msg_ids[0])
+
+        evaluation = EvaluationMetrics(list(retrieved_msg_ids), relevant_msg_ids, top_retrieved_msg_ids[0][0])
         return evaluation

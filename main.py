@@ -14,8 +14,8 @@ from utils import Utils
 
 parser = argparse.ArgumentParser(description='Deep Conversation Search Analyze')
 parser.add_argument('-d', '--data_dir', default='./data')
-parser.add_argument('-s', '--dataset', type=str.lower, choices=['reddit', 'cran'], default='reddit')
-parser.add_argument('-e', '--encoder', type=str.lower, choices=['bert', 'bow'], default='bert')
+parser.add_argument('-s', '--dataset', type=str.lower, choices=['reddit', 'cran'], default='cran')
+parser.add_argument('-e', '--encoder', type=str.lower, choices=['bert', 'bow'], default='bow')
 parser.add_argument('-l', '--conversation_length', choices=['s', 'm', 'l', 'xl'], default='s')
 parser.add_argument('-w', '--window_size', type=int, default=3)
 parser.add_argument('-c', '--compare_func', type=str.lower, choices=['cosine', 'l2'], default='cosine')
